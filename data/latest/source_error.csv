@@ -1,0 +1,6 @@
+stage,error_type,error,traceback
+performances,RuntimeError,"RuntimeError(""No recent performance rows found. Columns=['player_id', 'season_name', 'competition_id', 'competition_name', 'team_id', 'team_name', 'nb_in_group', 'nb_on_pitch', 'goals', 'assists', 'own_goals', 'subed_in', 'subed_out', 'yellow_cards', 'second_yellow_cards', 'direct_red_cards', 'penalty_goals', 'minutes_played', 'goals_conceded', 'clean_sheets']"")","Traceback (most recent call last):
+  File ""/home/runner/work/football-scout-open-data/football-scout-open-data/transfermarkt_open_harvester.py"", line 91, in main
+    raise RuntimeError(f'No recent performance rows found. Columns={perf_columns}')
+RuntimeError: No recent performance rows found. Columns=['player_id', 'season_name', 'competition_id', 'competition_name', 'team_id', 'team_name', 'nb_in_group', 'nb_on_pitch', 'goals', 'assists', 'own_goals', 'subed_in', 'subed_out', 'yellow_cards', 'second_yellow_cards', 'direct_red_cards', 'penalty_goals', 'minutes_played', 'goals_conceded', 'clean_sheets']
+"
