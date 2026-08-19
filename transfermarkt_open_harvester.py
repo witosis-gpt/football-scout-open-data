@@ -73,22 +73,25 @@ def main():
         print('Streaming performance rows...')
         chunks=[]
         perf_columns=None
+        season_col=None
         for chunk in pd.read_csv(PERF,chunksize=200000,low_memory=False):
             if perf_columns is None:
                 perf_columns=list(chunk.columns)
                 print('PERFORMANCE COLUMNS:', perf_columns)
-            if 'season' not in chunk.columns:
-                continue
-            chunk=chunk[chunk['season'].astype(str).isin(RECENT)].copy()
+                season_col='season_name' if 'season_name' in chunk.columns else ('season' if 'season' in chunk.columns else None)
+                if season_col is None:
+                    raise RuntimeError(f'No season column found. Columns={perf_columns}')
+            chunk=chunk[chunk[season_col].astype(str).isin(RECENT)].copy()
             if chunk.empty:
                 continue
+            chunk['season']=chunk[season_col].astype(str)
             chunk['player_id']=pd.to_numeric(chunk['player_id'],errors='coerce')
             for c in ['nb_on_pitch','goals','assists','minutes_played']:
                 if c in chunk.columns:
                     chunk[c+'_num']=chunk[c].map(clean_num)
             chunks.append(chunk)
         if not chunks:
-            raise RuntimeError(f'No recent performance rows found. Columns={perf_columns}')
+            raise RuntimeError(f'No recent performance rows found in {season_col}. Columns={perf_columns}')
         perf=pd.concat(chunks,ignore_index=True)
     except Exception as e:
         write_error('performances',e)
