@@ -1,8 +1,10 @@
-import re, time, traceback
+import re, time, traceback, importlib
 from pathlib import Path
 import pandas as pd
 import LanusStats as ls
-import LanusStats.fotmob as fotmob_module
+
+# Import the actual LanusStats.fotmob module, not the FotMob class re-exported by package __init__.
+fotmob_module = importlib.import_module('LanusStats.fotmob')
 
 # GitHub Actions is a headless Linux runner. Force Chromium into a mode that
 # nodriver supports there: headless + sandbox disabled.
