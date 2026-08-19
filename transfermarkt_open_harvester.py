@@ -1,5 +1,7 @@
 from pathlib import Path
 import traceback
+import re
+import numbers
 import pandas as pd
 
 SRC=Path('external/football-datasets/datalake/transfermarkt')
@@ -13,11 +15,19 @@ RECENT={'24/25','25/26','2025','2026'}
 
 
 def clean_num(s):
-    if s is None:
+    if s is None or (isinstance(s,float) and pd.isna(s)):
         return 0.0
-    x=str(s).strip().replace("'",'').replace('.','').replace(',','.')
+    if isinstance(s,numbers.Number):
+        return float(s)
+    x=str(s).strip().replace("'",'')
     if x in {'','-','nan','None'}:
         return 0.0
+    # Transfermarkt minutes can use dots as thousands separators: 1.470 = 1470.
+    # Preserve ordinary decimals such as 8.0 instead of turning them into 80.
+    if re.fullmatch(r'\d{1,3}(?:\.\d{3})+',x):
+        x=x.replace('.','')
+    elif ',' in x and '.' not in x:
+        x=x.replace(',','.')
     try:
         return float(x)
     except Exception:
@@ -91,8 +101,6 @@ def main():
         if not numeric:
             raise RuntimeError(f'No numeric performance fields available. Columns={list(perf.columns)}')
 
-        # Critical: keep team + competition in the grouping. The old version summed youth + senior
-        # competitions together, then attached one modal competition label, which corrupted per-90s.
         group_cols=['player_id','season']
         for c in ['team_name','competition_name']:
             if c in perf.columns:
