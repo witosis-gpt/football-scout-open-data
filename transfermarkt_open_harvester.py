@@ -35,9 +35,7 @@ def write_error(stage, exc):
 
 def main():
     try:
-        print('Reading profiles...')
         prof=pd.read_csv(PROF,low_memory=False)
-        print('PROFILE COLUMNS:', list(prof.columns))
         prof['player_id']=pd.to_numeric(prof['player_id'],errors='coerce')
         keep_prof=[c for c in [
             'player_id','player_name','date_of_birth','citizenship','position',
@@ -45,13 +43,10 @@ def main():
         ] if c in prof.columns]
         prof=prof[keep_prof].drop_duplicates('player_id')
     except Exception as e:
-        write_error('profiles',e)
-        raise
+        write_error('profiles',e); raise
 
     try:
-        print('Reading latest market values...')
         val=pd.read_csv(VAL,low_memory=False)
-        print('VALUE COLUMNS:', list(val.columns))
         val['player_id']=pd.to_numeric(val['player_id'],errors='coerce')
         if 'value' in val.columns:
             keep=['player_id','value'] + (['date_unix'] if 'date_unix' in val.columns else [])
@@ -66,18 +61,13 @@ def main():
             val=val[['player_id']].drop_duplicates('player_id')
             val['market_value_eur']=pd.NA
     except Exception as e:
-        write_error('market_values',e)
-        raise
+        write_error('market_values',e); raise
 
     try:
-        print('Streaming performance rows...')
-        chunks=[]
-        perf_columns=None
-        season_col=None
+        chunks=[]; perf_columns=None; season_col=None
         for chunk in pd.read_csv(PERF,chunksize=200000,low_memory=False):
             if perf_columns is None:
                 perf_columns=list(chunk.columns)
-                print('PERFORMANCE COLUMNS:', perf_columns)
                 season_col='season_name' if 'season_name' in chunk.columns else ('season' if 'season' in chunk.columns else None)
                 if season_col is None:
                     raise RuntimeError(f'No season column found. Columns={perf_columns}')
@@ -94,33 +84,25 @@ def main():
             raise RuntimeError(f'No recent performance rows found in {season_col}. Columns={perf_columns}')
         perf=pd.concat(chunks,ignore_index=True)
     except Exception as e:
-        write_error('performances',e)
-        raise
+        write_error('performances',e); raise
 
     try:
         numeric=[c for c in ['nb_on_pitch_num','goals_num','assists_num','minutes_played_num'] if c in perf.columns]
         if not numeric:
             raise RuntimeError(f'No numeric performance fields available. Columns={list(perf.columns)}')
-        agg=perf.groupby(['player_id','season'],as_index=False)[numeric].sum()
 
-        def mode_map(col):
-            if col not in perf.columns:
-                return None
-            return (perf.dropna(subset=[col]).groupby(['player_id','season'])[col]
-                    .agg(lambda x: x.value_counts().index[0]).reset_index())
-
-        for col in ['team_name','competition_name']:
-            m=mode_map(col)
-            if m is not None:
-                agg=agg.merge(m,on=['player_id','season'],how='left')
+        # Critical: keep team + competition in the grouping. The old version summed youth + senior
+        # competitions together, then attached one modal competition label, which corrupted per-90s.
+        group_cols=['player_id','season']
+        for c in ['team_name','competition_name']:
+            if c in perf.columns:
+                group_cols.append(c)
+        agg=perf.groupby(group_cols,as_index=False,dropna=False)[numeric].sum()
 
         agg=agg.merge(prof,on='player_id',how='left').merge(val,on='player_id',how='left')
-
-        mins=agg['minutes_played_num'].replace(0,pd.NA) if 'minutes_played_num' in agg.columns else pd.Series(pd.NA,index=agg.index)
-        goals=agg['goals_num'] if 'goals_num' in agg.columns else 0
-        assists=agg['assists_num'] if 'assists_num' in agg.columns else 0
-        agg['goals_per90']=goals/mins*90
-        agg['assists_per90']=assists/mins*90
+        mins=agg['minutes_played_num'].replace(0,pd.NA)
+        agg['goals_per90']=agg.get('goals_num',0)/mins*90
+        agg['assists_per90']=agg.get('assists_num',0)/mins*90
         agg['ga_per90']=agg['goals_per90'].fillna(0)+agg['assists_per90'].fillna(0)
 
         if 'date_of_birth' in agg.columns:
@@ -131,21 +113,18 @@ def main():
             agg['age']=pd.NA
 
         agg.to_csv(OUT/'transfermarkt_recent_player_seasons.csv',index=False)
-        minutes=agg['minutes_played_num'] if 'minutes_played_num' in agg.columns else pd.Series(0,index=agg.index)
-        youth=agg[(agg['age'].notna()) & (agg['age']<=23) & (minutes>=600)].copy()
+        youth=agg[(agg['age'].notna()) & (agg['age']<=23) & (agg['minutes_played_num']>=600)].copy()
         youth=youth.sort_values(['ga_per90','minutes_played_num'],ascending=[False,False])
         youth.to_csv(OUT/'transfermarkt_u23_discovery.csv',index=False)
 
         pd.DataFrame([{
             'source':'salimt/football-datasets (Transfermarkt-derived open dataset)',
             'profile_rows':len(prof),'recent_performance_rows':len(perf),
-            'player_seasons':len(agg),'u23_600min_rows':len(youth),'status':'ok'
+            'player_competition_seasons':len(agg),'u23_600min_rows':len(youth),'status':'ok'
         }]).to_csv(OUT/'source_status.csv',index=False)
-        print('SUCCESS', len(agg), 'player-seasons;', len(youth), 'U23 rows')
-        print(youth.head(20).to_string(index=False))
+        print('SUCCESS',len(agg),'player-competition-seasons;',len(youth),'U23 rows')
     except Exception as e:
-        write_error('build',e)
-        raise
+        write_error('build',e); raise
 
 
 if __name__=='__main__':
