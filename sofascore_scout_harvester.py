@@ -20,23 +20,36 @@ PREFERRED_SEASONS = [
 def norm(s):
     return re.sub(r'[^a-z0-9]+', ' ', str(s).lower()).strip()
 
+def _flatten_season_value(v):
+    if isinstance(v, dict):
+        return [str(k) for k in v.keys()]
+    if isinstance(v, (list, tuple, set, pd.Series)):
+        out=[]
+        for x in v:
+            out.extend(_flatten_season_value(x))
+        return out
+    return [str(v)] if v is not None else []
+
 def season_values(obj):
     if isinstance(obj, pd.DataFrame):
         for c in ['seasons','season','Season','SEASON']:
             if c in obj.columns:
-                return [str(x) for x in obj[c].dropna().tolist()]
+                out=[]
+                for v in obj[c].dropna().tolist():
+                    out.extend(_flatten_season_value(v))
+                return out
         cols=[c for c in obj.columns if str(c).lower() != 'id']
         if cols:
-            return [str(x) for x in obj[cols[0]].dropna().tolist()]
+            out=[]
+            for v in obj[cols[0]].dropna().tolist():
+                out.extend(_flatten_season_value(v))
+            return out
         return []
     if isinstance(obj, dict):
         if 'seasons' in obj:
-            v=obj['seasons']
-            return [str(x) for x in (v if isinstance(v,(list,tuple,set)) else [v])]
+            return _flatten_season_value(obj['seasons'])
         return [str(x) for x in obj.keys()]
-    if isinstance(obj, (list,tuple,set,pd.Series)):
-        return [str(x) for x in obj]
-    return [str(obj)] if obj is not None else []
+    return _flatten_season_value(obj)
 
 def pick_season(seasons):
     seasons = [str(x) for x in seasons]
