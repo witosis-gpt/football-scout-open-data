@@ -1,0 +1,2 @@
+input_rows,attack_midfield_900min_pool,under_5m_or_unknown_pool,status,note
+8827,5242,5015,ok,"Heuristic based on production, age, minutes and market value; no dribble/pass/carry event data."
