@@ -84,14 +84,17 @@ def main():
 
     ranked=pool.sort_values('hidden_gem_score',ascending=False)[cols]
     ranked.to_csv(OUT/'u23_hidden_gems_ranked.csv',index=False)
+    ranked.head(100).to_csv(OUT/'u23_hidden_gems_top100.csv',index=False)
 
     cheap=pool[(pool['market_value_eur'].isna()) | (pool['market_value_eur']<=5_000_000)].copy()
     cheap=cheap.sort_values('hidden_gem_score',ascending=False)[cols]
     cheap.to_csv(OUT/'u23_hidden_gems_under_5m.csv',index=False)
+    cheap.head(100).to_csv(OUT/'u23_hidden_gems_under_5m_top100.csv',index=False)
 
     if 'main_position' in pool.columns:
         mids=pool[pool['main_position'].eq('Midfield')].sort_values('hidden_gem_score',ascending=False)[cols]
         mids.to_csv(OUT/'u23_midfield_hidden_gems.csv',index=False)
+        mids.head(100).to_csv(OUT/'u23_midfield_hidden_gems_top100.csv',index=False)
 
     summary=pd.DataFrame([{
         'input_rows':len(df),
