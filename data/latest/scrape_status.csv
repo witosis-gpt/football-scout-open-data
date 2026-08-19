@@ -1,18 +1,18 @@
 league,season,rows,columns,status
-Argentina Liga Profesional,"{'08/09': 1636, '09/10': 2323, '10/11': 2887, '11/12': 3613, '12/13': 5103, '13/14': 6455, '2014': 8338, '2015': 9651, '2016': 11237, '16/17': 12117, '17/18': 13950, '18/19': 18113, '19/20': 24239, '2021': 37231, '2022': 41884, '2023': 47647, '2024': 57478, '2025-Apertura': 70268, '2025-Clausura': 77826, '2026': 87913}",0,0,failed
-Argentina Copa de la Liga Profesional,"{'2019': 23108, '2020': 34618, '2021': 35486, '2022': 40377, '2023': 47644, '2024': 57487}",0,0,failed
-Argentina Primera Nacional,"{'2023': 48079, '2024': 57782, '2025': 71009, '2026': 87940}",0,0,failed
-Brasileirão Série A,"{'20/21': 27591, '2021': 36166, '2022': 40557, '2023': 48982, '2024': 58766, '2025': 72034, '2026': 87678}",0,0,failed
-Chile Primera Division,"{'2023': 48017, '2024': 57883, '2025': 71131, '2026': 88493}",0,0,failed
-Colombia Primera A Apertura,"{'2022': 40320, '2023': 48283, '2024': 57374, '2025': 70681, '2026': 88503}",0,0,failed
-Colombia Primera A Clausura,"{'2022': 42387, '2023': 52847, '2024': 63819, '2025': 77825}",0,0,failed
-Mexico LigaMX Apertura,"{'2022': 42017, '2023': 52052, '2024': 61419, '2025': 76500}",0,0,failed
-Mexico LigaMX Clausura,"{'2022': 40080, '2023': 47656, '2024': 57315, '2025': 70096, '2026': 87699}",0,0,failed
-Peru Liga 1,"{'2022': 40118, '2023': 48078, '2024': 57741, '2025': 70962, '2026': 88529}",0,0,failed
-La Liga,"{'15/16': 10495, '16/17': 11906, '17/18': 13662, '18/19': 18020, '19/20': 24127, '20/21': 32501, '21/22': 37223, '22/23': 42409, '23/24': 52376, '24/25': 61643, '25/26': 77559}",0,0,failed
-MLS,"{'2021': 35964, '2022': 40071, '2023': 47955, '2024': 57317, '2025': 70158, '2026': 86668}",0,0,failed
-Saudi Pro League,"{'20/21': 34459, '21/22': 37597, '22/23': 44908, '23/24': 53241, '24/25': 63998, '25/26': 80443}",0,0,failed
-J1 League,"{'2021': 35273, '2022': 40230, '2023': 48055, '2024': 57353, '2025': 69871, '2026': 87931}",0,0,failed
-USL Championship,"{'2021': 36157, '2022': 40364, '2023': 48258, '2024': 57319, '2025': 70263, '2026': 87611}",0,0,failed
-La Liga 2,"{'20/21': 32502, '21/22': 37225, '22/23': 42410, '23/24': 52563, '24/25': 62048, '25/26': 77558}",0,0,failed
-Primera RFEF,"{'24/25': 64430, '25/26': 77727}",0,0,failed
+Argentina Liga Profesional,2026,0,0,failed
+Argentina Copa de la Liga Profesional,2024,0,0,failed
+Argentina Primera Nacional,2026,0,0,failed
+Brasileirão Série A,2026,0,0,failed
+Chile Primera Division,2026,0,0,failed
+Colombia Primera A Apertura,2026,0,0,failed
+Colombia Primera A Clausura,2025,0,0,failed
+Mexico LigaMX Apertura,2025,0,0,failed
+Mexico LigaMX Clausura,2026,0,0,failed
+Peru Liga 1,2026,0,0,failed
+La Liga,25/26,0,0,failed
+MLS,2026,0,0,failed
+Saudi Pro League,25/26,0,0,failed
+J1 League,2026,0,0,failed
+USL Championship,2026,0,0,failed
+La Liga 2,25/26,0,0,failed
+Primera RFEF,25/26,0,0,failed
