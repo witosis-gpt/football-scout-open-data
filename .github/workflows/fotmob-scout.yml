@@ -8,6 +8,9 @@ on:
       - 'fotmob_scout_harvester.py'
       - '.github/workflows/fotmob-scout.yml'
 
+permissions:
+  contents: write
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
@@ -25,6 +28,23 @@ jobs:
           pip install --upgrade LanusStats pandas openpyxl nodriver
       - name: Run FotMob scouting harvester
         run: python fotmob_scout_harvester.py
+      - name: Publish latest scouting data to repository
+        if: always()
+        run: |
+          mkdir -p data/latest
+          if [ -d output ]; then
+            cp -f output/*.csv data/latest/ 2>/dev/null || true
+            cp -f output/*.xlsx data/latest/ 2>/dev/null || true
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/latest
+          if git diff --cached --quiet; then
+            echo "No new scouting data to commit"
+          else
+            git commit -m "Update latest FotMob scouting data"
+            git push
+          fi
       - name: Upload scouting output
         if: always()
         uses: actions/upload-artifact@v4
