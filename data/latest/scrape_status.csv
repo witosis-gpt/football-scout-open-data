@@ -1,7 +1,14 @@
-league,season,successful_metrics
-La Liga 2,2025/2026,0
-Argentina Primera Division,2025,0
-Primera Division Colombia,2025-Clausura,0
-Primera Division Chile,2025,0
-Brasileirao,2025,0
-Primera Division Peru,2025,0
+league,season,rows,columns,status
+Argentina Liga Profesional,id,0,0,failed
+Argentina Copa de la Liga Profesional,id,0,0,failed
+Argentina Primera Nacional,id,0,0,failed
+Chile Primera Division,id,0,0,failed
+Colombia Primera A Apertura,id,0,0,failed
+Colombia Primera A Clausura,id,0,0,failed
+Mexico LigaMX Apertura,id,0,0,failed
+Mexico LigaMX Clausura,id,0,0,failed
+Peru Liga 1,id,0,0,failed
+MLS,id,0,0,failed
+Saudi Pro League,id,0,0,failed
+J1 League,id,0,0,failed
+USL Championship,id,0,0,failed
