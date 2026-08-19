@@ -4,18 +4,18 @@ import pandas as pd
 import LanusStats as ls
 import LanusStats.fotmob as fotmob_module
 
-# GitHub Actions runs as root. LanusStats/nodriver needs no_sandbox=True there.
+# GitHub Actions is a headless Linux runner. Force Chromium into a mode that
+# nodriver supports there: headless + sandbox disabled.
 _original_start = fotmob_module.uc.start
-async def _start_no_sandbox(*args, **kwargs):
-    kwargs.setdefault('no_sandbox', True)
+async def _start_actions_browser(*args, **kwargs):
+    kwargs['headless'] = True
+    kwargs['sandbox'] = False
     return await _original_start(*args, **kwargs)
-fotmob_module.uc.start = _start_no_sandbox
+fotmob_module.uc.start = _start_actions_browser
 
 OUT = Path('output_v3')
 OUT.mkdir(parents=True, exist_ok=True)
 
-# These are the competitions actually exposed by LanusStats' FotMob config.
-# We focus first on non-Top-5 discovery pools plus La Liga 2.
 TARGETS = {
     'La Liga 2': '2025/2026',
     'Argentina Primera Division': '2025',
